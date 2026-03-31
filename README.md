@@ -58,3 +58,28 @@ A full-stack AI-powered SaaS application that provides users with creative and p
 ---
 
 ## 📂 Project Structure
+
+---
+
+## ⚙️ Environment Variables
+
+VITE_CLERK_PUBLISHABLE_KEY=your_key
+
+### Frontend (.env)
+
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+git clone https://github.com/nehitaaikh23/dreemai.git
+
+
+### 2. Install dependencies
+
+
+### 3. Run the app
+
+npm run dev

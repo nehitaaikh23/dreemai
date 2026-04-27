@@ -1,14 +1,45 @@
 import React, {useState} from 'react';
 import { Eraser, FileText, Sparkles } from 'lucide-react'
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/react';
+import Markdown from "react-markdown"
 
 const ReviewResume = () => {
 
-  const onSubmitHandler = async (e) => {
-        e.preventDefault();
-    }
-    
+    const [input, setInput] = useState(null);
+
+    const [loading, setLoading] = useState(false);
+    const [content, setContent] = useState('');
       
-    const [input, setInput] = useState('');
+    const {getToken} = useAuth();
+
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+        try {
+          setLoading(true);
+          const token = await getToken();
+
+          const formData = new FormData();
+          formData.append('resume', input);
+
+          const {data} = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/ai/review-resume`, formData, 
+          
+        {headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`}})
+
+          if (data.success){
+          setContent(data.message);
+        } else {
+          toast.error(data.error);
+        }
+        } catch (error) {
+          toast.error(error.message);
+        } finally {
+          setLoading(false)
+        }
+    }
 
 
   return (
@@ -26,9 +57,13 @@ const ReviewResume = () => {
 
         <p className='text-xs text-gray-500 font-light mt-1'>Only accepts PDF format.</p>
        
-        <button className='w-full flex justify-center items-center gap-2 bg-gradient-to-r
+        <button disabled={loading} className='w-full flex justify-center items-center gap-2 bg-gradient-to-r
         from-[#00DA83] to-[#009BB3] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer'>
-          <FileText className='w-5'/>
+          {
+                                loading ? <span className='w-4 h-4 my-1 rounded-full border-2
+                                border-t-transparent animate-spin'></span> : <FileText className='w-5'/>
+          }
+
           Review Resume
         </button>
       </form>
@@ -38,12 +73,26 @@ const ReviewResume = () => {
             <FileText className='w-5 h-5 text-[#00DA83]'/>
             <h1 className='text-xl font-semibold'>Analysis Results</h1>
           </div>
-          <div className='flex-1 flex justify-center items-center'>
+
+          {!content 
+          ? (
+            <div className='flex-1 flex justify-center items-center'>
             <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
               <FileText className='w-9 h-9'/>
               <p>Upload a resume and click "Review Resume" to get started.</p>
             </div>
           </div>
+          ) 
+          : (
+            <div className='mt-3 h-full overflow-y-scroll text-sm text-slate-600'>
+              <div className='reset-tw'>
+                 <Markdown>
+                   {content}
+                  </Markdown>
+              </div>
+            </div>
+          )}
+          
       </div>
     </div>
   )

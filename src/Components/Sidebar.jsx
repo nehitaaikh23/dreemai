@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
-import { useClerk, useUser } from '@clerk/react'
+import { useClerk, useUser, useAuth } from '@clerk/react'
 import { useSubscription } from '@clerk/react/experimental'
 import { Eraser, File, Hash, House, Image, LogOut, Scissors, SquarePen, Subscript, Users } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const navItems = [
     {to: '/ai', label: 'Dashboard', Icon: House },
@@ -22,6 +24,33 @@ const Sidebar = ({ sidebar, setSidebar}) => {
     const { data, isLoading, error } = useSubscription();
 
     const [subscription, setSubscription] = React.useState('Free');
+
+    const {getToken} = useAuth();
+
+    const getUserSubscription = async() => {
+        try {
+            const {data} = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/user-plan`, {
+            headers: {
+                Authorization: `Bearer ${await getToken()}`
+            }
+        })
+        if(data.success){
+            setSubscription(data.plan)
+        } else {
+            toast.error(data.error)
+        }
+        } catch (error) {
+            toast.error(error.message);
+            console.error('Error fetching subscription', error)
+        }
+        
+    }
+
+    useEffect((
+        () => { 
+            getUserSubscription();
+        }
+    ), [])
 
 
   return (

@@ -20,6 +20,16 @@ const Dashboard = () => {
 
   const getDashboardData = async() => {
     try {
+      const plan = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/user-plan`, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`
+        }
+      })
+      if (plan.data.success) {
+        setSubscription(plan.data.plan);
+      } else {
+        toast.error(plan.data.error);
+      }
 
       const token = await getToken();
       const {data} = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/my-creations`, {

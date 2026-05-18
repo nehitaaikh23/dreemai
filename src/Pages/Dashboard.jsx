@@ -5,6 +5,7 @@ import { useSubscription } from '@clerk/react/experimental'
 import CreationItem from '../Components/CreationItem';
 import axios from 'axios';
 import { useAuth, useUser } from '@clerk/react';
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
 
@@ -15,8 +16,11 @@ const Dashboard = () => {
 
   const {getToken} = useAuth();
 
+  const [subscription, setSubscription] = useState('Free');
+
   const getDashboardData = async() => {
     try {
+
       const token = await getToken();
       const {data} = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/my-creations`, {
         headers: {
@@ -61,7 +65,7 @@ const Dashboard = () => {
         rounded-xl border border-gray-200'>
           <div className='text-slate-700'>
             <p className='text-sm'>Active Plan</p>
-            <h2 className='text-lg font-semibold'>{data.subscriptionItems[0].plan.name} Plan</h2>
+            <h2 className='text-lg font-semibold'>{subscription} Plan</h2>
           </div>
           <div className='w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF61C5]
           to-[#9E53EE] text-white flex justify-center items-center'>

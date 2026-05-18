@@ -32,7 +32,7 @@ const GenerateImages = () => {
 
       const prompt =`Generate an image of ${input} in ${selectedStyle} style.`
 
-      const {data} = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/ai/generate-image`, {prompt: prompt, publish: publish}, 
+      const {data} = await axios.post('${import.meta.env.VITE_BASE_URL}/api/ai/generate-image', {prompt: prompt, publish: publish}, 
         {headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`}})

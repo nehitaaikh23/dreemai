@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useClerk, useUser } from '@clerk/react'
 import { useSubscription } from '@clerk/react/experimental'
-import { Eraser, File, Hash, House, Image, LogOut, Scissors, SquarePen, Users } from 'lucide-react';
+import { Eraser, File, Hash, House, Image, LogOut, Scissors, SquarePen, Subscript, Users } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
@@ -20,6 +20,8 @@ const Sidebar = ({ sidebar, setSidebar}) => {
     const {user} = useUser();
     const {signOut, openUserProfile} = useClerk();
     const { data, isLoading, error } = useSubscription();
+
+    const [subscription, setSubscription] = React.useState('Free');
 
 
   return (
@@ -46,7 +48,7 @@ const Sidebar = ({ sidebar, setSidebar}) => {
                 <img src={user.imageUrl} alt="" className='w-8 rounded-full'/>
                 <div>
                     <h1 className='text-sm font-semibold'>{user.fullName}</h1>
-                    <p className='text-xs font-medium text-slate-500'>{data.subscriptionItems[0].plan.name} Plan</p>
+                    <p className='text-xs font-medium text-slate-500'>{subscription} Plan</p>
                 </div>
         </div>
         <LogOut onClick={signOut} className='w-4.5 text-gray-400 hover:text-gray-700
